@@ -1,0 +1,36 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name" : "client",
+      "image": "miodragcdocker/multi-client",
+      "hostname": "client",
+      "essential": false
+    },
+    {
+      "name" : "server",
+      "image": "miodragcdocker/multi-server",
+      "hostname": "api",
+      "essential": false
+    },
+    {
+      "name" : "worker",
+      "image": "miodragcdocker/multi-worker",
+      "hostname": "client",
+      "essential": false
+    },
+    {
+      "name" : "nginx",
+      "image": "miodragcdocker/multi-nginx",
+      "hostname": "client",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": [ "client", "server"]
+    }
+  ]
+}

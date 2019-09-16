@@ -20,3 +20,18 @@ after_success:
   - docker push miodragcdocker/multi-nginx
   - docker push miodragcdocker/multi-server
   - docker push miodragcdocker/multi-worker
+
+# deploy to aws from travis
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-2
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-us-west-2-30907614069
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id:
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
