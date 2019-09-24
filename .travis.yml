@@ -6,32 +6,17 @@ before_install:
   - docker build -t miodragcdocker/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true miodragcdocker/react-test npm run test
+  - docker run miodragcdocker/react-test npm test -- --coverage
 
 after_success:
   - docker build -t miodragcdocker/multi-client ./client
   - docker build -t miodragcdocker/multi-nginx ./nginx
   - docker build -t miodragcdocker/multi-server ./server
   - docker build -t miodragcdocker/multi-worker ./worker
-# log in to the docker CLI
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-# Take those images and push them to docker hub
+  # Take those images and push them to docker hub
   - docker push miodragcdocker/multi-client
   - docker push miodragcdocker/multi-nginx
   - docker push miodragcdocker/multi-server
   - docker push miodragcdocker/multi-worker
-
-# deploy to aws from travis
-deploy:
-  provider: elasticbeanstalk
-  region: us-west-2
-  app: multi-docker-aws
-  env: MultiDockerAws-env
-  bucket_name: elasticbeanstalk-us-west-2-30907614069
-  bucket_path: docker-multi
-  on:
-    branch: master
-  access_key_id:
-    secure: $AWS_ACCESS_KEY
-  secret_access_key:
-    secure: $AWS_SECRET_KEY
